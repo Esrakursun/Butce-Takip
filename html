@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  İSKELET: HTML
+  HTML sayfanın NE İÇERDİĞİNİ söyler (başlık, kutu, buton...).
+  CSS nasıl GÖRÜNECEĞİNİ, JS ne YAPACAĞINI söyler.
+  Üçü ayrı dosyada durur: index.html + style.css + app.js
+  ============================================================
+-->
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+
+  <!-- Bu satır telefonda sayfanın küçülmeden, ekrana sığacak şekilde açılmasını sağlar.
+       Olmazsa telefon sayfayı masaüstü gibi gösterip yazıları minik yapar. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bütçe Takip</title>
+
+  <!-- CSS dosyasını bağlıyoruz. Dosya adı style.css olmalı, aynı klasörde durmalı. -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Tüm uygulamayı bir kutuya (div) alıyoruz.
+     Neden? CSS ile bu kutunun genişliğini sınırlayıp ortalayabilmek için. -->
+<div class="uygulama">
+
+  <!-- ÜST BÖLÜM: ay seçici + bakiye -->
+  <header class="ust">
+    <div class="ust-satir">
+      <h1>Bütçe Takip</h1>
+
+      <!-- type="month" tarayıcının hazır ay seçicisini getirir, kendimiz yazmıyoruz.
+           id="ay": JS bu elemanı bulurken bu isimle çağıracak.
+           aria-label: ekranda yazı yok, ama ekran okuyucu ne olduğunu söylesin diye. -->
+      <div class="ay-sec">
+  <button type="button" id="oncekiAy" aria-label="Önceki ay">‹</button>
+  <span id="ayYazi"></span>
+  <button type="button" id="sonrakiAy" aria-label="Sonraki ay">›</button>
+ </div>
+ <input type="hidden" id="ay">
+</div>
+
+
+    <p class="bakiye-etiket">Bu ayın bakiyesi</p>
+
+    <!-- İçindeki "0 ₺" sadece başlangıç değeri. JS bunu her seferinde güncelleyecek.
+         Güncelleyeceğimiz her şeye id veriyoruz. -->
+    <p class="bakiye" id="bakiye">0 ₺</p>
+
+    <div class="ozet">
+      <div class="g"><span>Gelir</span><strong id="topGelir">0 ₺</strong></div>
+      <div class="d"><span>Gider</span><strong id="topGider">0 ₺</strong></div>
+    </div>
+  </header>
+
+  <!-- SEKMELER: "Kayıtlar" ve "Rapor" arasında geçiş.
+       data-panel: butonun hangi paneli açacağını JS'e söyleyen etiket.
+       Kendi özel bilgini HTML'e "data-bir-sey" diye ekleyebilirsin. -->
+  <nav class="sekmeler">
+    <button aria-selected="true" data-panel="p-kayit">Kayıtlar</button>
+    <button aria-selected="false" data-panel="p-rapor">Ay sonu raporu</button>
+  </nav>
+
+  <!-- ====================== PANEL 1: KAYITLAR ====================== -->
+  <section class="panel" id="p-kayit">
+
+    <!-- novalidate: tarayıcının kendi hata balonlarını kapatır,
+         çünkü kontrolü kendi JS kodumuzla yapacağız. -->
+    <form class="ekle" id="form" novalidate>
+
+      <!-- Gelir/Gider seçimi: radio butonlar, aynı name olunca sadece biri seçilebilir.
+           checked: sayfa açılınca "gider" seçili gelsin. -->
+      <div class="tur">
+        <label><input type="radio" name="tur" value="gider" checked> Gider</label>
+        <label><input type="radio" name="tur" value="gelir"> Gelir</label>
+      </div>
+
+      <div class="iki">
+        <!-- <label> içine input koyunca, yazıya dokununca kutu seçilir (telefonda çok işe yarar).
+             inputmode="decimal": telefonda sayı klavyesi açılır.
+             step="0.01": kuruş girilebilsin. -->
+        <label class="alan">Tutar (₺)
+          <input type="number" id="miktar" inputmode="decimal" step="0.01" min="0" placeholder="0,00">
+        </label>
+        <label class="alan">Tarih
+          <input type="date" id="tarih">
+        </label>
+      </div>
+
+      <!-- Seçenekleri (Market, Fatura...) HTML'e elle yazmadık.
+           Gelir mi gider mi seçildiğine göre JS dolduracak. -->
+      <label class="alan">Kategori
+        <select id="kategori"></select>
+      </label>
+
+      <label class="alan">Not (isteğe bağlı)
+        <input type="text" id="not" maxlength="60" placeholder="Örn. haftalık market">
+      </label>
+
+      <!-- Hata mesajı buraya yazılacak. Başta boş. -->
+      <p class="hata" id="hata" role="alert"></p>
+
+      <!-- type="submit": tıklayınca formun "submit" olayı çalışır, JS onu yakalar. -->
+      <button class="kaydet" type="submit">Kaydı ekle</button>
+    </form>
+
+    <!-- Filtre butonları. aria-pressed hem erişilebilirlik hem CSS için "seçili mi" bilgisi. -->
+    <div class="filtre">
+      <button data-f="hepsi" aria-pressed="true">Hepsi</button>
+      <button data-f="gelir" aria-pressed="false">Gelir</button>
+      <button data-f="gider" aria-pressed="false">Gider</button>
+    </div>
+
+    <!-- ul = madde listesi. İçini (li'leri) JS her seferinde yeniden oluşturacak. -->
+    <ul class="liste" id="liste"></ul>
+  </section>
+
+  <!-- ====================== PANEL 2: RAPOR ====================== -->
+  <!-- hidden: başta gizli. JS sekmeye basılınca bu özelliği kaldırıp gösterecek. -->
+  <section class="panel" id="p-rapor" hidden>
+    <div class="rapor-kart">
+      <h2>Özet</h2>
+      <div id="ozetSatirlari"></div>
+    </div>
+    <div class="rapor-kart">
+      <h2>Giderler kategoriye göre</h2>
+      <div id="kategoriler"></div>
+    </div>
+  </section>
+
+</div>
+
+<!-- JS'i en sona koyuyoruz. Neden?
+     Tarayıcı sayfayı yukarıdan aşağı okur. JS'i başa koysaydık, henüz var olmayan
+     elemanları (id="bakiye" gibi) arar, bulamaz ve hata verirdi. -->
+<script src="app.js"></script>
+</body>
+</html>
