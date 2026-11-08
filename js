@@ -401,3 +401,8 @@ $("tarih").value = bugun();            // tarih kutusu bugünle gelsin
 $("ay").value = bugun().slice(0, 7);   // ay seçici bu ayla başlasın
 kategoriDoldur();
 ciz();
+
+// Uygulamayı internetsiz çalıştıran service worker'ı kaydet
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
