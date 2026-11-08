@@ -1,0 +1,296 @@
+/* ============================================================
+   GÖRÜNÜM: CSS
+   Yapı hep aynı: seçici { özellik: değer; }
+   Seçici "kime", özellikler "ne yapılacak" demek.
+     p        -> tüm <p> elemanları
+     .bakiye  -> class="bakiye" olanlar   (nokta = class)
+     #ay      -> id="ay" olan eleman      (diyez = id)
+   ============================================================ */
+
+
+/* ---------- 1) DEĞİŞKENLER ----------
+   :root sayfanın en üstüdür. Buraya yazdığımız --isim değerleri
+   her yerde var(--isim) ile kullanılır.
+   Neden? Rengi değiştirmek istersen 40 yerde değil, tek yerde değiştirirsin. */
+:root {
+  --zemin: #eef2f1;
+  --kart: #ffffff;
+  --murekkep: #16323a;   /* ana yazı ve koyu alanlar */
+  --soluk: #5d7279;      /* ikinci derece yazılar */
+  --cizgi: #d5dedd;      /* ince kenarlıklar */
+  --gelir: #1f7a5c;      /* yeşil */
+  --gider: #b8433b;      /* kırmızı */
+}
+
+
+/* ---------- 2) GENEL AYARLAR ---------- */
+
+/* * = her eleman. box-sizing: border-box şunu sağlar:
+   width: 100% dersen padding ve kenarlık da o 100%'ün İÇİNDE kalır.
+   Bunu yazmazsan kutular taşar. Neredeyse her projenin ilk satırlarından biri. */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;                       /* tarayıcının varsayılan boşluğunu sıfırla */
+  background: var(--zemin);
+  color: var(--murekkep);
+  font-family: system-ui, sans-serif;   /* cihazın kendi yazı tipi: hızlı ve tanıdık */
+  font-size: 16px;
+  line-height: 1.45;               /* satır aralığı: okunabilirlik için */
+}
+
+.uygulama {
+  max-width: 520px;   /* geniş ekranda uzayıp gitmesin */
+  margin: 0 auto;     /* üst-alt 0, sağ-sol "auto" = yatayda ortala */
+  padding-bottom: 48px;
+}
+
+/* Klavye ile gezenlerin hangi elemanda olduğunu görmesi için halka */
+button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 3px solid #4d9fb0;
+  outline-offset: 2px;
+}
+
+
+/* ---------- 3) ÜST BÖLÜM ---------- */
+.ust {
+  background: var(--murekkep);
+  color: #f2f7f6;
+  padding: 20px 20px 24px;       /* üst, sağ-sol, alt */
+  border-radius: 0 0 28px 28px;  /* sol-üst, sağ-üst, sağ-alt, sol-alt: sadece alt köşeler yuvarlak */
+}
+
+/* FLEXBOX: çocukları yan yana dizer.
+   justify-content: space-between -> biri en sola, diğeri en sağa
+   align-items: center            -> dikeyde ortala */
+.ust-satir {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;                     /* çocuklar arası boşluk */
+}
+
+.ust h1 { font-size: 18px; margin: 0; font-weight: 600; }
+
+.ust input[type="month"] {
+  background: rgba(255,255,255,.12);   /* rgba son sayı şeffaflık: 0 görünmez, 1 tam dolu */
+  color: inherit;                      /* inherit = üst elemandan rengi al */
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 10px;
+  padding: 6px 10px;
+  font: inherit;
+  font-size: 14px;
+}
+.ay-sec { display: flex; align-items: center; gap: 8px; }
+.ay-sec button {
+  width: 36px; height: 36px; border-radius: 10px; font-size: 20px; cursor: pointer;
+  background: rgba(255,255,255,.12); color: inherit; border: 1px solid rgba(255,255,255,.25);
+}
+.ay-sec span { min-width: 110px; text-align: center; font-size: 14px; }
+.bakiye-etiket { margin: 22px 0 0; font-size: 14px; opacity: .75; }
+
+/* Bakiye uygulamanın en önemli bilgisi, o yüzden en büyük yazı.
+   clamp(en küçük, ideal, en büyük): ekran genişliğine göre büyür ama sınırı aşmaz.
+   12vw = ekran genişliğinin %12'si. */
+.bakiye {
+  margin: 0;
+  font-size: clamp(38px, 12vw, 52px);
+  font-weight: 700;
+  /* tabular-nums: rakamların hepsi aynı genişlikte olur, tutar değişince yazı kıpırdamaz */
+  font-variant-numeric: tabular-nums;
+}
+
+.ozet { display: flex; gap: 12px; margin-top: 18px; }
+.ozet div {
+  flex: 1;                        /* iki kutu boş alanı eşit paylaşsın */
+  background: rgba(255,255,255,.1);
+  border-radius: 14px;
+  padding: 10px 12px;
+}
+.ozet span { display: block; font-size: 13px; opacity: .75; }   /* span satır içidir; block yapınca alt satıra geçer */
+.ozet strong { font-size: 17px; font-variant-numeric: tabular-nums; }
+.ozet .g strong { color: #8fe0bd; }
+.ozet .d strong { color: #ffb4ac; }
+
+
+/* ---------- 4) SEKMELER ---------- */
+.sekmeler { display: flex; gap: 8px; padding: 18px 20px 6px; }
+.sekmeler button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid var(--cizgi);
+  background: transparent;
+  color: var(--soluk);
+  font: inherit;       /* butonlar varsayılan olarak sayfanın yazı tipini almaz, inherit ile alırlar */
+  font-weight: 600;
+  cursor: pointer;     /* üzerine gelince el işareti */
+}
+
+/* [aria-selected="true"] = bu özelliği "true" olan buton.
+   JS sekmeye tıklanınca bu özelliği değiştirecek, CSS de görünümü ona göre değiştirecek.
+   Yani JS sadece durumu söyler, görünümü CSS yönetir. */
+.sekmeler button[aria-selected="true"] {
+  background: var(--murekkep);
+  color: #fff;
+  border-color: var(--murekkep);
+}
+
+.panel { padding: 8px 20px 0; }
+
+/* hidden özelliği normalde elemanı gizler ama .panel'in kendi display ayarı varsa ezilebilir.
+   Bu satır "hidden her zaman kazansın" garantisi. */
+.panel[hidden] { display: none; }
+
+
+/* ---------- 5) FORM ---------- */
+form.ekle {
+  background: var(--kart);
+  border-radius: 18px;
+  padding: 16px;
+  margin-top: 12px;
+  border: 1px solid var(--cizgi);
+}
+
+/* GRID: satır ve sütunlu ızgara. "1fr 1fr" = iki eşit sütun. */
+.tur { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+
+.tur label {
+  text-align: center;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1.5px solid var(--cizgi);
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--soluk);
+}
+
+/* Radio yuvarlağını görünmez yapıp, tüm kutuyu buton gibi gösteriyoruz.
+   (display:none yapmıyoruz, çünkü klavyeyle erişilebilir kalmalı.) */
+.tur input { position: absolute; opacity: 0; pointer-events: none; }
+
+/* :has() = "içinde şu olan" demek. Burada: içindeki radio seçiliyse label'ı boya.
+   Biraz ileri bir konu, şimdilik "seçili radio'nun kutusunu renklendiriyor" diye bil. */
+.tur label:has(input[value="gelir"]:checked) { border-color: var(--gelir); color: var(--gelir); background: #e8f5ef; }
+.tur label:has(input[value="gider"]:checked) { border-color: var(--gider); color: var(--gider); background: #fbeceb; }
+
+.alan { display: block; margin-bottom: 10px; font-size: 14px; color: var(--soluk); }
+.alan input, .alan select {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  padding: 11px 12px;
+  font: inherit;
+  font-size: 16px;      /* 16px'ten küçük olursa iPhone kutuya tıklayınca sayfayı yakınlaştırır */
+  color: var(--murekkep);
+  background: #f7faf9;
+  border: 1px solid var(--cizgi);
+  border-radius: 10px;
+}
+
+.iki { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.kaydet {
+  width: 100%;
+  margin-top: 6px;
+  padding: 13px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--murekkep);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* min-height: hata mesajı çıkınca/kaybolunca altındaki buton aşağı yukarı zıplamasın */
+.hata { color: var(--gider); font-size: 14px; min-height: 20px; margin: 4px 0 0; }
+
+
+/* ---------- 6) FİLTRE VE LİSTE ---------- */
+.filtre { display: flex; gap: 6px; margin: 18px 0 8px; }
+.filtre button {
+  padding: 6px 14px;
+  border-radius: 999px;     /* çok büyük değer = tam yuvarlak uçlu hap şekli */
+  border: 1px solid var(--cizgi);
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  color: var(--soluk);
+  cursor: pointer;
+}
+.filtre button[aria-pressed="true"] { background: var(--murekkep); color: #fff; border-color: var(--murekkep); }
+
+.liste { list-style: none; margin: 0; padding: 0; }   /* madde işaretlerini ve girintiyi kaldır */
+
+/* Her kayıt kartı iki sütunlu grid: solda bilgi, sağda tutar */
+.kayit {
+  display: grid;
+  grid-template-columns: 1fr auto;   /* auto = içeriği kadar yer kapla, 1fr = kalanı al */
+  gap: 2px 12px;                     /* satır arası 2px, sütun arası 12px */
+  align-items: center;
+  background: var(--kart);
+  border: 1px solid var(--cizgi);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+}
+.kayit .ad { font-weight: 600; }
+.kayit .alt { grid-column: 1; font-size: 13px; color: var(--soluk); }   /* grid-column: kaçıncı sütuna girsin */
+.kayit .tutar {
+  grid-row: 1;
+  grid-column: 2;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.kayit .tutar.gelir { color: var(--gelir); }   /* iki class birleşik: hem tutar hem gelir olan */
+.kayit .tutar.gider { color: var(--gider); }
+.kayit .sil {
+  grid-row: 2;
+  grid-column: 2;
+  justify-self: end;
+  background: none;
+  border: 0;
+  color: var(--soluk);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 2px 0;
+}
+.bos { text-align: center; color: var(--soluk); padding: 28px 12px; }
+
+
+/* ---------- 7) RAPOR ---------- */
+.rapor-kart {
+  background: var(--kart);
+  border: 1px solid var(--cizgi);
+  border-radius: 18px;
+  padding: 16px;
+  margin-top: 12px;
+}
+.rapor-kart h2 { font-size: 16px; margin: 0 0 12px; }
+
+.satir {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--cizgi);
+  font-variant-numeric: tabular-nums;
+}
+.satir:last-child { border-bottom: 0; }   /* :last-child = kardeşleri arasında sonuncu; son satırın çizgisi olmasın */
+
+.kat { margin-bottom: 12px; }
+.kat-ust { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 4px; }
+
+/* Çubuk grafik: dıştaki .cubuk gri zemin, içindeki <i> renkli dolgu.
+   Dolgunun genişliğini JS yüzde olarak verecek (width: 40% gibi). */
+.cubuk { height: 10px; background: #e3ebea; border-radius: 6px; overflow: hidden; }
+.cubuk i { display: block; height: 100%; background: var(--gider); border-radius: 6px; }
+
+/* Hareket azaltma ayarı kapalı olan kişiler için çubuk yumuşakça dolar.
+   Ayarı açanlar için animasyon yok. Küçük ama saygılı bir detay. */
+@media (prefers-reduced-motion: no-preference) {
+  .cubuk i { transition: width .35s ease; }
+}
