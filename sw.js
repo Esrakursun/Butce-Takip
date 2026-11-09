@@ -1,7 +1,7 @@
 // Service worker: dosyaları telefona önbelleğe alır, internetsiz de açılır.
 // ÖNEMLİ: index.html, style.css veya app.js'i değiştirdiğinde
 // aşağıdaki sürüm numarasını artır (v1 -> v2). Yoksa telefon eski dosyaları göstermeye devam eder.
-const SURUM = "butce-v1";
+const SURUM = "butce-v2";
 const DOSYALAR = [
   "./",
   "./index.html",
