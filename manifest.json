@@ -1,6 +1,5 @@
 {
   "name": "Bütçe Takip",
-  "short_name": "Bütçe Takip",
   "description": "Gelir ve giderlerini takip et",
   "start_url": "./index.html",
   "scope": "./",
